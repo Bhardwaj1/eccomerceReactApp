@@ -1,29 +1,34 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import "./App.css";
+import { ColorModeContext, useMode } from "./theme/theme";
+import { CssBaseline, ThemeProvider } from "@mui/material";
+import Topbar from "./global/Topbar";
+import Sidebar from "./global/Sidebar";
+import { Route, Routes } from "react-router-dom";
+import Team from "./pages/Team";
+import Contacts from "./pages/Contacts";
 
 function App() {
-  const [darkMode, setDarkMode] = useState(
-    () => localStorage.getItem("theme") === "dark"
-  );
-
-  useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
-    }
-  }, [darkMode]);
+  const [theme, colorMode] = useMode();
+  const [isSidebar, setIsSidebar] = useState(true);
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white dark:bg-gray-900">
-      <button
-        onClick={() => setDarkMode(!darkMode)}
-        className="p-4 border rounded-md bg-black text-white dark:bg-white dark:text-black"
-      >
-        {darkMode ? "Light" : "Dark"}
-      </button>
-    </div>
+    <ColorModeContext.Provider value={colorMode}>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <div className="app">
+          {/* <TodoBoard /> */}
+          <Sidebar isSidebar={isSidebar} />
+          <main className="content">
+            <Topbar setIsSidebar={setIsSidebar} />
+            <Routes>
+              {/* <Route path="/" element={<Dashboard />} /> */}
+              <Route path="/team" element={<Team />} />
+              <Route path="/contacts" element={<Contacts />} />
+            </Routes>
+          </main>
+        </div>
+      </ThemeProvider>
+    </ColorModeContext.Provider>
   );
 }
 
