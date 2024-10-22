@@ -2,15 +2,23 @@ import { useState } from "react";
 import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import { Link } from "react-router-dom";
+import "react-pro-sidebar/dist/css/styles.css";
 import { tokens } from "../theme/theme";
-import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
-import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
-import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
-import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
-import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
-import PlaylistAddCheckIcon from "@mui/icons-material/PlaylistAddCheck";
 import styled from "styled-components";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import CategoryIcon from "@mui/icons-material/Category";
+import AddIcon from "@mui/icons-material/Add";
+import TocIcon from "@mui/icons-material/Toc";
+import InventoryIcon from "@mui/icons-material/Inventory";
+import DiscountIcon from "@mui/icons-material/Discount";
+import StarRateIcon from "@mui/icons-material/StarRate";
+import SummarizeIcon from "@mui/icons-material/Summarize";
+import PersonIcon from "@mui/icons-material/Person";
+import SettingsIcon from "@mui/icons-material/Settings";
+import PaymentIcon from "@mui/icons-material/Payment";
+import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
+import PeopleOutlineIcon from "@mui/icons-material/PeopleOutline";
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
@@ -39,7 +47,7 @@ const Sidebar = () => {
   return (
     <Conatiner>
       <Box
-        className="sideBar"
+        className="h-[100%]"
         sx={{
           "& .pro-sidebar-inner": {
             background: `${colors.primary[400]} !important`,
@@ -77,7 +85,7 @@ const Sidebar = () => {
                   ml="15px"
                 >
                   <Typography variant="h3" color={colors.grey[100]}>
-                    Rabat
+                    Bhardwaj
                   </Typography>
                   <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
                     <MenuOutlinedIcon />
@@ -104,7 +112,7 @@ const Sidebar = () => {
                     fontWeight="bold"
                     sx={{ m: "10px 0 0 0" }}
                   >
-                    Admin name
+                    Gaurav Bhardwaj
                   </Typography>
                   <Typography variant="h5" color={colors.greenAccent[500]}>
                     Welcome
@@ -122,67 +130,121 @@ const Sidebar = () => {
               setSelected={setSelected}
             /> */}
 
-              <Typography
+              {/* <Typography
                 variant="h6"
                 color={colors.grey[300]}
                 sx={{ m: "15px 0 5px 20px" }}
               >
                 Data
-              </Typography>
+              </Typography> */}
               <Item
-                title="Manage Team"
-                to="/team"
-                icon={<PeopleOutlinedIcon />}
+                title="Dashboard"
+                to="/"
+                icon={<DashboardIcon />}
                 selected={selected}
                 setSelected={setSelected}
               />
-              {/* <Item
-              title="Contacts Information"
-              to="/contacts"
-              icon={<ContactsOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            /> */}
               <Item
-                title="Invoices Balances"
-                to="/invoices"
-                icon={<ReceiptOutlinedIcon />}
+                title="Orders Management"
+                to="/orderManagement"
+                icon={<AddShoppingCartIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <Item
+                title="Customers Management"
+                to="/customerManagement"
+                icon={<PeopleOutlineIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <Item
+                title="Inventory"
+                to="/inventory"
+                icon={<InventoryIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <Item
+                title="Promotions & Discounts"
+                to="/promotions&discounts"
+                icon={<DiscountIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <Item
+                title="Review & Ratings"
+                to="/reviews"
+                icon={<StarRateIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <Item
+                title="Reports & Analytics"
+                to="/reports"
+                icon={<SummarizeIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <Item
+                title="User Management"
+                to="/userManagement"
+                icon={<PersonIcon />}
                 selected={selected}
                 setSelected={setSelected}
               />
 
-              <Typography
-                variant="h6"
-                color={colors.grey[300]}
-                sx={{ m: "15px 0 5px 20px" }}
-              >
-                Pages
-              </Typography>
+              {!isCollapsed && (
+                <Typography
+                  variant="h6"
+                  color={colors.grey[300]}
+                  sx={{ m: "15px 0 5px 20px" }}
+                >
+                  Product Management
+                </Typography>
+              )}
               <Item
-                title="Profile Form"
-                to="/form"
-                icon={<PersonOutlinedIcon />}
+                title="All Products"
+                to="/products"
+                icon={<TocIcon />}
                 selected={selected}
                 setSelected={setSelected}
               />
               <Item
-                title="Calendar"
-                to="/calendar"
-                icon={<CalendarTodayOutlinedIcon />}
+                title="Add New Product"
+                to="/products/addProducts"
+                icon={<AddIcon />}
                 selected={selected}
                 setSelected={setSelected}
               />
               <Item
-                title="FAQ Page"
-                to="/faq"
-                icon={<HelpOutlineOutlinedIcon />}
+                title="Categories & Tags"
+                to="/products/categories&tags"
+                icon={<CategoryIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+              {!isCollapsed && (
+                <Typography
+                  variant="h6"
+                  color={colors.grey[300]}
+                  sx={{ m: "15px 0 5px 20px" }}
+                >
+                  Settings
+                </Typography>
+              )}
+
+              <Item
+                title="General Settings"
+                to="/generalSettings"
+                icon={<SettingsIcon />}
                 selected={selected}
                 setSelected={setSelected}
               />
               <Item
-                title="board / todos"
-                to="/board"
-                icon={<PlaylistAddCheckIcon />}
+                title="Payment & Shipping"
+                to="/payment"
+                icon={<PaymentIcon />}
                 selected={selected}
                 setSelected={setSelected}
               />
