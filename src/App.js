@@ -9,6 +9,7 @@ import Team from "./pages/Team";
 import Contacts from "./pages/Contacts";
 import "./App.css";
 import Dashboard from "./pages/Dashboard/Dashboard";
+import AddCategory from "./pages/ProductManagement/Categories/AddCategory";
 function App() {
   const [theme, colorMode] = useMode();
   const [isSidebar, setIsSidebar] = useState(true);
@@ -26,6 +27,7 @@ function App() {
               <Route path="/team" element={<Team />} />
               <Route path="/" element={<Dashboard />} />
               <Route path="/contacts" element={<Contacts />} />
+              <Route path='/products/productCategory'element={<AddCategory/>}/>
             </Routes>
           </main>
         </div>
