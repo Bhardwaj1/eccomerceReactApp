@@ -9,7 +9,8 @@ import Team from "./pages/Team";
 import Contacts from "./pages/Contacts";
 import "./App.css";
 import Dashboard from "./pages/Dashboard/Dashboard";
-import AddCategory from "./pages/ProductManagement/Categories/AddCategory";
+import { Toaster } from "sonner";
+import Category from "./pages/ProductManagement/Categories/Category";
 function App() {
   const [theme, colorMode] = useMode();
   const [isSidebar, setIsSidebar] = useState(true);
@@ -17,6 +18,7 @@ function App() {
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
+        <Toaster richColors position="bottom-right" />
         <div className="flex relative justify-center">
           {/* <TodoBoard /> */}
           <Sidebar isSidebar={isSidebar} />
@@ -27,7 +29,7 @@ function App() {
               <Route path="/team" element={<Team />} />
               <Route path="/" element={<Dashboard />} />
               <Route path="/contacts" element={<Contacts />} />
-              <Route path='/products/productCategory'element={<AddCategory/>}/>
+              <Route path='/products/productCategory'element={<Category/>}/>
             </Routes>
           </main>
         </div>
