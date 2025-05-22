@@ -5,9 +5,14 @@ import Button from "../../../components/UI/Button";
 import { notify } from "../../../utility/notify";
 import { useTheme } from "@mui/material/styles";
 
+import { useDispatch } from "react-redux";
+import { createCategory } from "../../../slice/categorySlice";
+
 const AddCategory = () => {
   const theme = useTheme();
   const isDark = theme.palette.mode === "dark";
+
+  const dispatch = useDispatch();
 
   const [formData, setFormData] = useState({
     name: "",
@@ -33,14 +38,54 @@ const AddCategory = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
+
+    console.log("trig")
     e.preventDefault();
+
     if (!formData?.name.trim()) {
       notify("Name is required", "error");
       return;
     }
-    console.log(formData);
-    notify("Category added successfully", "success");
+
+    // Prepare form data for multipart upload
+    const payload = new FormData();
+    payload.append("name", formData.name);
+    payload.append("slug", formData.slug);
+    payload.append("description", formData.description);
+    if (formData.image) payload.append("image", formData.image);
+    payload.append("alt", formData.alt);
+    payload.append("isActive", formData.isActive);
+    payload.append("sortOrder", formData.sortOrder);
+    payload.append("metaTitle", formData.metaTitle);
+    payload.append("metaDescription", formData.metaDescription);
+    payload.append("keywords", formData.keywords);
+
+    try {
+      // Dispatch createCategory thunk
+      const resultAction = await dispatch(createCategory(payload));
+
+      if (createCategory.fulfilled.match(resultAction)) {
+        notify("Category added successfully", "success");
+        // Optionally reset form
+        setFormData({
+          name: "",
+          slug: "",
+          description: "",
+          image: null,
+          alt: "",
+          isActive: true,
+          sortOrder: 0,
+          metaTitle: "",
+          metaDescription: "",
+          keywords: "",
+        });
+      } else {
+        notify(resultAction.payload || "Failed to add category", "error");
+      }
+    } catch (error) {
+      notify(error.message || "Failed to add category", "error");
+    }
   };
 
   return (
