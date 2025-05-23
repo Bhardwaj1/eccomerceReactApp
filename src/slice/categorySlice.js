@@ -1,6 +1,6 @@
 // src/redux/features/categorySlice.js
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { GetData, PostData, PutData, DeleteData, PostDataMultipart } from '../services/index';
+import { GetData, PutData, DeleteData, PostDataMultipart } from '../services/index';
 
 // Async thunk for GET with pagination & search
 export const getAllCategories = createAsyncThunk(
@@ -35,7 +35,9 @@ export const createCategory = createAsyncThunk(
   async (formData, { rejectWithValue }) => {
     try {
       console.log("triggered");
-      const res = await PostDataMultipart("/product/category/", formData);
+      // formData must be a FormData instance here, not JSON
+      const res = await PostDataMultipart("/products/category/", formData);
+      console.log("triggered again ");
       return res.payload;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Something went wrong");

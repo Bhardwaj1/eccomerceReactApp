@@ -1,8 +1,6 @@
 import axios from 'axios';
 import axiosIntercepter from './axiosIntercepter';
 
-console.log(process.env.REACT_APP_BASE_URL)
-
 export function PostData(isAuthenticated, apiUrl, data) {
   let axiosConfig;
   if (isAuthenticated) {
@@ -176,25 +174,20 @@ export function DeleteData(isAuthenticated, apiUrl) {
 // }
 
 // Without token
-export function PostDataMultipart(apiUrl, data) {
-  console.log({apiUrl});
-  const axiosConfig = {
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
-  };
-
-  return new Promise(async (resolve, reject) => {
-    try {
-      let totalurl = `${process.env.REACT_APP_BASE_URL}${apiUrl}`; // no schema logic
-      const res = await axios.post(totalurl, data, axiosConfig);
-      resolve({ status: res.status, payload: res.data });
-    } catch (error) {
-      console.error("POST Error:", error.message);
-      reject(error);
-    }
-  });
+export async function PostDataMultipart(apiUrl, data) {
+  try {
+    const totalurl = `${process.env.REACT_APP_BASE_URL}${apiUrl}`;
+    console.log(totalurl,data);
+    // ✅ Let Axios auto-set headers (important!)
+    const res = await axios.post(totalurl, data);
+    console.log(res);
+    return { status: res.status, payload: res.data };
+  } catch (error) {
+    console.error("POST Error:", error); // Log entire error
+    throw error;
+  }
 }
+
 
 
 export function WithoutTenantPostData(isAuthenticated, apiUrl, data) {

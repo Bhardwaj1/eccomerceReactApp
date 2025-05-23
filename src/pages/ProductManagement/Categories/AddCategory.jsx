@@ -7,6 +7,7 @@ import { useTheme } from "@mui/material/styles";
 
 import { useDispatch } from "react-redux";
 import { createCategory } from "../../../slice/categorySlice";
+import axios from "axios";
 
 const AddCategory = () => {
   const theme = useTheme();
@@ -39,10 +40,11 @@ const AddCategory = () => {
   };
 
   const handleSubmit = async (e) => {
-
-    console.log("trig")
     e.preventDefault();
 
+   
+
+    
     if (!formData?.name.trim()) {
       notify("Name is required", "error");
       return;
@@ -61,31 +63,40 @@ const AddCategory = () => {
     payload.append("metaDescription", formData.metaDescription);
     payload.append("keywords", formData.keywords);
 
-    try {
-      // Dispatch createCategory thunk
-      const resultAction = await dispatch(createCategory(payload));
+    // try {
+    //   // Dispatch createCategory thunk
+    //   const resultAction = await dispatch(createCategory(payload));
 
-      if (createCategory.fulfilled.match(resultAction)) {
-        notify("Category added successfully", "success");
-        // Optionally reset form
-        setFormData({
-          name: "",
-          slug: "",
-          description: "",
-          image: null,
-          alt: "",
-          isActive: true,
-          sortOrder: 0,
-          metaTitle: "",
-          metaDescription: "",
-          keywords: "",
-        });
-      } else {
-        notify(resultAction.payload || "Failed to add category", "error");
-      }
-    } catch (error) {
-      notify(error.message || "Failed to add category", "error");
+    //   if (createCategory.fulfilled.match(resultAction)) {
+    //     notify("Category added successfully", "success");
+    //     // Optionally reset form
+    //     setFormData({
+    //       name: "",
+    //       slug: "",
+    //       description: "",
+    //       image: null,
+    //       alt: "",
+    //       isActive: true,
+    //       sortOrder: 0,
+    //       metaTitle: "",
+    //       metaDescription: "",
+    //       keywords: "",
+    //     });
+    //   } else {
+    //     notify(resultAction.payload || "Failed to add category", "error");
+    //   }
+    // } catch (error) {
+    //   notify(error.message || "Failed to add category", "error");
+    // }
+
+    try {
+      const res = await axios.post("http://localhost:5000/api/products/category/", payload);
+      alert("Category added: " + JSON.stringify(res.data));
+    } catch (err) {
+      console.error("Error uploading:", err.response?.data || err.message);
+      alert("Upload failed");
     }
+
   };
 
   return (
