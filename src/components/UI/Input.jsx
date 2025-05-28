@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTheme } from '@mui/material/styles';
 
-const Input = ({ label, ...props }) => {
+export const Input = ({ label, ...props }) => {
   const theme = useTheme();
   const isDark = theme.palette.mode === 'dark';
 
@@ -25,4 +25,4 @@ const Input = ({ label, ...props }) => {
   );
 };
 
-export default Input;
+

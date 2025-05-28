@@ -8,7 +8,8 @@ export const getAllCategories = createAsyncThunk(
   async ({ page = 1, pageSize = 10, search = '' }, { rejectWithValue }) => {
     try {
       const query = new URLSearchParams({ page, pageSize, search }).toString();
-      const response = await GetData(true, `/categories?${query}`);
+      console.log("Calling GetData with query:", query);  // add this log
+      const response = await GetData(`/products-category/?${query}`);
       // Expecting response.payload = { data: [], totalCount: number }
       return response.payload;
     } catch (error) {
@@ -35,8 +36,8 @@ export const createCategory = createAsyncThunk(
   async (formData, { rejectWithValue }) => {
     try {
       console.log("triggered");
-      // formData must be a FormData instance here, not JSON
-      const res = await PostDataMultipart("/products/category/", formData);
+      // formData must be a FormData instance here, not JSON-
+      const res = await PostDataMultipart("/products-category/", formData);
       console.log("triggered again ");
       return res.payload;
     } catch (error) {
@@ -74,12 +75,11 @@ export const deleteCategory = createAsyncThunk(
 // Initial state
 const initialState = {
   categories: [],
-  totalCount: 0,
-  loading: false,
+  isLoading: false,
+  isSuccess:false,
   error: null,
-  page: 1,
-  pageSize: 10,
   search: '',
+  pagination:{}
 };
 
 const categorySlice = createSlice({
@@ -105,42 +105,43 @@ const categorySlice = createSlice({
     builder
       // GET
       .addCase(getAllCategories.pending, (state) => {
-        state.loading = true;
+        state.isLoading = true;
         state.error = null;
       })
       .addCase(getAllCategories.fulfilled, (state, action) => {
-        state.loading = false;
+        state.isLoading = false;
+        state.isSuccess=true;
         state.categories = action.payload.data;
-        state.totalCount = action.payload.totalCount;
+        state.pagination = action.payload.meta;
       })
       .addCase(getAllCategories.rejected, (state, action) => {
-        state.loading = false;
+        state.isLoading = false;
         state.error = action.payload;
       })
 
       // CREATE
       .addCase(createCategory.pending, (state) => {
-        state.loading = true;
+        state.isLoading = true;
         state.error = null;
       })
       .addCase(createCategory.fulfilled, (state, action) => {
-        state.loading = false;
+        state.isLoading = false;
         // Optionally add the new category to the list or refetch list
         state.categories.unshift(action.payload);
         state.totalCount += 1;
       })
       .addCase(createCategory.rejected, (state, action) => {
-        state.loading = false;
+        state.isLoading = false;
         state.error = action.payload;
       })
 
       // UPDATE
       .addCase(updateCategory.pending, (state) => {
-        state.loading = true;
+        state.isLoading = true;
         state.error = null;
       })
       .addCase(updateCategory.fulfilled, (state, action) => {
-        state.loading = false;
+        state.isLoading = false;
         // Update the category in the list
         const index = state.categories.findIndex(cat => cat.id === action.payload.id);
         if (index !== -1) {
@@ -148,23 +149,23 @@ const categorySlice = createSlice({
         }
       })
       .addCase(updateCategory.rejected, (state, action) => {
-        state.loading = false;
+        state.isLoading = false;
         state.error = action.payload;
       })
 
       // DELETE
       .addCase(deleteCategory.pending, (state) => {
-        state.loading = true;
+        state.isLoading = true;
         state.error = null;
       })
       .addCase(deleteCategory.fulfilled, (state, action) => {
-        state.loading = false;
+        state.isLoading = false;
         // Remove deleted category from list
         state.categories = state.categories.filter(cat => cat.id !== action.payload);
         state.totalCount -= 1;
       })
       .addCase(deleteCategory.rejected, (state, action) => {
-        state.loading = false;
+        state.isLoading = false;
         state.error = action.payload;
       });
   },
