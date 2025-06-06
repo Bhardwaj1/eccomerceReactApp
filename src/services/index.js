@@ -30,40 +30,58 @@ export function PostData(isAuthenticated, apiUrl, data) {
       const res = await axiosIntercepter.post(totalurl, data, axiosConfig);
       resolve({ status: res.status, payload: res.data });
     } catch (error) {
-      console.log(error.message);
       reject(error);
     }
   });
 }
 
+// export function PutData(isAuthenticated, apiUrl, data) {
+//   let axiosConfig;
+
+//   if (isAuthenticated) {
+//     const { token } = JSON.parse(sessionStorage.getItem("authentication"));
+//     axiosConfig = {
+//       headers: {
+//         "Content-Type": "application/json",
+//         Authorization: `Bearer ${token}`,
+//       },
+//     };
+//   } else {
+//     axiosConfig = {
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//     };
+//   }
+
+//   return new Promise(async (resolve, reject) => {
+//     try {
+//       let currentSchema = sessionStorage.getItem("currentSchema");
+//       if (!currentSchema) {
+//         return reject({ message: "Leagal Entity Not Found" });
+//       }
+
+//       let totalurl = `${process.env.REACT_APP_SERVER_PROTOCAL}${currentSchema}.${process.env.REACT_APP_SERVER_BASE_URL}${apiUrl}`;
+
+//       const res = await axiosIntercepter.put(totalurl, data, axiosConfig);
+//       resolve({ status: res.status, payload: res.data });
+//     } catch (error) {
+//       reject(error);
+//     }
+//   });
+// }
+
 export function PutData(isAuthenticated, apiUrl, data) {
   let axiosConfig;
-
-  if (isAuthenticated) {
-    const { token } = JSON.parse(sessionStorage.getItem("authentication"));
-    axiosConfig = {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    };
-  } else {
-    axiosConfig = {
+axiosConfig = {
       headers: {
         "Content-Type": "application/json",
       },
     };
-  }
 
   return new Promise(async (resolve, reject) => {
     try {
-      let currentSchema = sessionStorage.getItem("currentSchema");
-      if (!currentSchema) {
-        return reject({ message: "Leagal Entity Not Found" });
-      }
-
-      let totalurl = `${process.env.REACT_APP_SERVER_PROTOCAL}${currentSchema}.${process.env.REACT_APP_SERVER_BASE_URL}${apiUrl}`;
-
+      let totalurl=`${process.env.REACT_APP_BASE_URL}${apiUrl}`;
       const res = await axiosIntercepter.put(totalurl, data, axiosConfig);
       resolve({ status: res.status, payload: res.data });
     } catch (error) {
@@ -106,7 +124,6 @@ export function PutData(isAuthenticated, apiUrl, data) {
 // }
 
 export function GetData(apiUrl) {
-  console.log(apiUrl);
   let axiosConfig;
   axiosConfig = {
     headers: {
@@ -125,32 +142,17 @@ export function GetData(apiUrl) {
   });
 }
 
-export function DeleteData(isAuthenticated, apiUrl) {
+export function DeleteData(isAutheticated,apiUrl) {
   let axiosConfig;
-  if (isAuthenticated) {
-    const { token } = JSON.parse(sessionStorage.getItem("authentication"));
-    axiosConfig = {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    };
-  } else {
-    axiosConfig = {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
-  }
+  axiosConfig = {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+
   return new Promise(async (resolve, reject) => {
     try {
-      let currentSchema = sessionStorage.getItem("currentSchema");
-      if (!currentSchema) {
-        return reject({ message: "Leagal Entity Not Found" });
-      }
-      let totalurl=`${process.env.REACT_APP_BASE_URL}${apiUrl}`
-      // let totalurl = `${process.env.REACT_APP_SERVER_PROTOCAL}${currentSchema}.${process.env.REACT_APP_SERVER_BASE_URL}${apiUrl}`;
-
+      let totalurl=`${process.env.REACT_APP_BASE_URL}${apiUrl}`;
       const res = await axiosIntercepter.delete(totalurl, axiosConfig);
       resolve({ status: res.status, payload: res.data });
     } catch (error) {
@@ -158,6 +160,40 @@ export function DeleteData(isAuthenticated, apiUrl) {
     }
   });
 }
+
+// export function DeleteData(isAuthenticated, apiUrl) {
+//   let axiosConfig;
+//   if (isAuthenticated) {
+//     const { token } = JSON.parse(sessionStorage.getItem("authentication"));
+//     axiosConfig = {
+//       headers: {
+//         "Content-Type": "application/json",
+//         Authorization: `Bearer ${token}`,
+//       },
+//     };
+//   } else {
+//     axiosConfig = {
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//     };
+//   }
+//   return new Promise(async (resolve, reject) => {
+//     try {
+//       let currentSchema = sessionStorage.getItem("currentSchema");
+//       if (!currentSchema) {
+//         return reject({ message: "Leagal Entity Not Found" });
+//       }
+//       let totalurl=`${process.env.REACT_APP_BASE_URL}${apiUrl}`
+//       // let totalurl = `${process.env.REACT_APP_SERVER_PROTOCAL}${currentSchema}.${process.env.REACT_APP_SERVER_BASE_URL}${apiUrl}`;
+
+//       const res = await axiosIntercepter.delete(totalurl, axiosConfig);
+//       resolve({ status: res.status, payload: res.data });
+//     } catch (error) {
+//       reject(error);
+//     }
+//   });
+// }
 
 // export function PostDataMultipart(isAuthenticated, apiUrl, data) {
 //   let axiosConfig;
@@ -198,15 +234,24 @@ export function DeleteData(isAuthenticated, apiUrl) {
 export async function PostDataMultipart(apiUrl, data) {
   try {
     const totalurl = `${process.env.REACT_APP_BASE_URL}${apiUrl}`;
-    console.log(totalurl, data);
-    // ✅ Let Axios auto-set headers (important!)
     const res = await axios.post(totalurl, data, {
       headers: { "Content-Type": "multipart/form-data" },
     });
-    console.log(res);
     return { status: res.status, payload: res.data };
   } catch (error) {
-    console.error("POST Error:", error); // Log entire error
+    throw error;
+  }
+};
+
+// Without token
+export async function PutDataMultipart(apiUrl, data) {
+  try {
+    const totalurl = `${process.env.REACT_APP_BASE_URL}${apiUrl}`;
+    const res = await axios.put(totalurl, data, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    return { status: res.status, payload: res.data };
+  } catch (error) {
     throw error;
   }
 }

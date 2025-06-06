@@ -199,12 +199,21 @@ export const ColorModeContext = createContext({
 });
 
 export const useMode = () => {
-  const [mode, setMode] = useState("dark");
+  const getInitialMode = () => {
+    const savedMode = localStorage.getItem("themeMode");
+    return savedMode || "dark";
+  };
+
+  const [mode, setMode] = useState(getInitialMode);
 
   const colorMode = useMemo(
     () => ({
       toggleColorMode: () =>
-        setMode((prev) => (prev === "light" ? "dark" : "light")),
+        setMode((prev) => {
+          const newMode = prev === "light" ? "dark" : "light";
+          localStorage.setItem("themeMode", newMode); // ✅ Save to localStorage
+          return newMode;
+        }),
     }),
     []
   );

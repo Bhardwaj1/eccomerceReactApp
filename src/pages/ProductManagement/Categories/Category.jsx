@@ -6,53 +6,46 @@ import AddCategory from "./AddCategory";
 import Table from "../../../components/Table/Table";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllCategories } from "../../../slice/categorySlice";
-import { debounce } from "../../../utility/debounce";
-import { useRef } from "react";
+import {
+  clearState,
+  deleteCategory,
+  getAllCategories,
+} from "../../../slice/productSlice/categorySlice";
+import Warning from "../../../components/warnings/Warning";
+import { notify } from "../../../utility/notify";
+import Loader from "../../../components/Loader/Loader";
+import EditCategory from "./EditCategory";
 
 const Category = () => {
-  const [openAddCategory, setAddCategory] = useState(false);
-  const { isSuccess, isLoading, categories,pagination } = useSelector(
-    (state) => state.category
-  );
+  const dispatch = useDispatch();
+  const { isSuccess, isLoading, categories, pagination, isDeleteSuccess } =
+    useSelector((state) => state.category);
+
   const [categoryRows, setCategoryRows] = useState([]);
   const [search, setSearch] = useState("");
-  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(10);
-  const dispatch = useDispatch();
 
+  const [openAddCategory, setAddCategory] = useState(false);
 
-  const debounceSearchHandler = useRef(
-    debounce((value) => {
-      setDebouncedSearch(value);
-    }, 2000)
-  ).current;
-  
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+
+  const [openEditCategoryModal, setOpenEditCategoryModal] = useState(false);
+  const [editableCategoryData, setEditableCategoryData] = useState(null);
+
+  // First time rendering
   useEffect(() => {
-    debounceSearchHandler(search);
-  }, [search, debounceSearchHandler]);
+    const fetchData = async () => {
+      await dispatch(
+        getAllCategories({ page: page + 1, pageSize: pageSize, search: search })
+      );
+    };
 
-  // ✅ Fetch on debounced search
-  useEffect(() => {
-    dispatch(getAllCategories({ page: 1, pageSize, search: debouncedSearch }));
-    setPage(0); // reset page when search changes
-  }, [debouncedSearch, dispatch, pageSize]);
+    fetchData();
+  }, [search, page, pageSize, dispatch]);
 
-  // ✅ Fetch on page/pageSize change (immediately)
-  useEffect(() => {
-    if (debouncedSearch !== "") {
-      dispatch(getAllCategories({ page: page + 1, pageSize, search: debouncedSearch }));
-    } else {
-      dispatch(getAllCategories({ page: page + 1, pageSize, search: search }));
-    }
-  }, [page, pageSize, dispatch,debouncedSearch,search]);
-
-  useEffect(() => {
-    if (isSuccess && !isLoading) {
-      setCategoryRows(categories);
-    }
-  }, [isSuccess, isLoading, categories]);
+  // Add Category
   const handleOpenAddCategory = () => {
     setAddCategory(true);
   };
@@ -60,15 +53,67 @@ const Category = () => {
     setAddCategory(false);
   };
 
+  // Delete Category
+  const handleOpenDeleteCategoryModal = (deleteableData) => {
+    setSelectedCategory(deleteableData);
+    setOpenDeleteModal(true);
+  };
+  const handleDeleteCategory = () => {
+    try {
+      dispatch(deleteCategory(selectedCategory?._id));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // Update
+  const handleOpenEditModal = (rowData) => {
+    setOpenEditCategoryModal(true);
+    setEditableCategoryData(rowData);
+  };
+
+  const handleCloseEditCategory = () => {
+    setOpenEditCategoryModal(false);
+  };
+
+  // Rendering
+  useEffect(() => {
+    if (isSuccess && !isLoading) {
+      setCategoryRows(categories);
+      dispatch(clearState());
+    }
+
+    if (isDeleteSuccess && !isLoading) {
+      dispatch(
+        getAllCategories({ page: page + 1, pageSize: pageSize, search: search })
+      );
+      dispatch(clearState());
+      setOpenDeleteModal(false);
+      notify("Deleted Successfully", "success");
+    }
+  }, [
+    isSuccess,
+    isLoading,
+    categories,
+    isDeleteSuccess,
+    dispatch,
+    page,
+    pageSize,
+    search,
+  ]);
+
+  // Columns
   const columns = [
     { header: "Name", accessor: "name" },
     { header: "Description", accessor: "description" },
     { header: "IsActive", accessor: "isActive" },
+    { header: "Edit", accessor: "edit" },
+    { header: "Delete", accessor: "delete" },
   ];
 
-  console.log({ search });
   return (
     <React.Fragment>
+      {isLoading && <Loader />}
       <Table
         columns={columns}
         rows={categoryRows}
@@ -79,6 +124,8 @@ const Category = () => {
         setPageSize={setPageSize}
         pagination={pagination}
         page={page}
+        handleDelete={handleOpenDeleteCategoryModal}
+        handleEdit={handleOpenEditModal}
       />
       <div className="flex justify-end m-2">
         <Button onClick={handleOpenAddCategory}>Add Category</Button>
@@ -86,8 +133,33 @@ const Category = () => {
       <Modal
         isOpen={openAddCategory}
         onClose={handleCloseAddCategory}
-        children={<AddCategory />}
+        children={
+          <AddCategory handleCloseAddCategory={handleCloseAddCategory} />
+        }
         headerContent={`Add Category`}
+      />
+      <Modal
+        isOpen={openEditCategoryModal}
+        onClose={handleCloseEditCategory}
+        children={
+          <EditCategory
+            handleCloseEditCategory={handleCloseEditCategory}
+            editableCategory={editableCategoryData}
+          />
+        }
+        headerContent={`Edit Category`}
+      />
+      <Modal
+        isOpen={openDeleteModal}
+        onClose={handleCloseAddCategory}
+        children={
+          <Warning
+            handleCloseWarningModal={() => setOpenDeleteModal(false)}
+            handleDelete={handleDeleteCategory}
+          />
+        }
+
+        // headerContent={`Add Category`}
       />
     </React.Fragment>
   );

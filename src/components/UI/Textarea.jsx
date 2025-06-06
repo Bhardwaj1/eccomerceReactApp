@@ -18,7 +18,7 @@ const Textarea = ({ label, ...props }) => {
       )}
       <textarea
         className={`border rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500
-          ${isDark ? 'bg-gray-800 border-gray-600 text-white' : 'bg-white border-gray-300 text-black'}`}
+          ${isDark ? 'bg-gray-800 border-gray-600 text-black' : 'bg-white border-gray-300 text-black'}`}
         rows="4"
         {...props}
       />

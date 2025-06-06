@@ -23,30 +23,34 @@ const Modal = ({ isOpen, onClose, headerContent, children }) => {
           maxHeight: "90vh",
         }}
       >
-        <div className="flex items-center justify-between px-4 py-3">
-          <div className="flex-1 text-center font-semibold">{headerContent}</div>
-          <button
-            onClick={onClose}
-            className={`ml-auto p-2 px-4 rounded-full text-sm focus:outline-none transition
+        {headerContent && (
+          <div className="flex items-center justify-between px-4 py-3">
+            <div className="flex-1 text-center font-semibold">
+              {headerContent}
+            </div>
+            <button
+              onClick={onClose}
+              className={`ml-auto p-2 px-4 rounded-full text-sm focus:outline-none transition
               ${
                 isDark
                   ? "bg-white text-black hover:bg-gray-200"
                   : "bg-gray-300 text-black hover:bg-gray-400"
               }
             `}
-            aria-label="Cancel modal"
-            type="button"
-          >
-            X
-          </button>
-        </div>
+              aria-label="Cancel modal"
+              type="button"
+            >
+              X
+            </button>
+          </div>
+        )}
         <div
           className="px-4 pb-4"
           style={{
             overflowY: "auto",
-            maxHeight: "calc(90vh - 56px)", 
-            scrollbarWidth: "none", 
-            msOverflowStyle: "none", 
+            maxHeight: "calc(90vh - 56px)",
+            scrollbarWidth: "none",
+            msOverflowStyle: "none",
           }}
         >
           <style>
