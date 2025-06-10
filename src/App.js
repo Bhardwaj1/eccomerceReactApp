@@ -11,6 +11,7 @@ import "./App.css";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import { Toaster } from "sonner";
 import Category from "./pages/ProductManagement/Categories/Category";
+import Product from "./pages/ProductManagement/Products/Product";
 function App() {
   const [theme, colorMode] = useMode();
   const [isSidebar, setIsSidebar] = useState(true);
@@ -30,6 +31,7 @@ function App() {
               <Route path="/" element={<Dashboard />} />
               <Route path="/contacts" element={<Contacts />} />
               <Route path='/products/productCategory'element={<Category/>}/>
+              <Route path="/products" element ={<Product/>}/>
             </Routes>
           </main>
         </div>

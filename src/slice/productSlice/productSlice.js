@@ -13,7 +13,7 @@ export const getAllProducts = createAsyncThunk(
   async ({ page = 1, pageSize = 10, search = "" }, { rejectWithValue }) => {
     try {
       const query = new URLSearchParams({ page, pageSize, search }).toString();
-      const response = await GetData(`/products-category/?${query}`);
+      const response = await GetData(`/products/?${query}`);
       return response.payload;
     } catch (error) {
       return rejectWithValue(error?.response?.data || error.message);
@@ -38,7 +38,7 @@ export const createProduct = createAsyncThunk(
   "product/createProduct",
   async (formData, { rejectWithValue }) => {
     try {
-      const res = await PostDataMultipart("/products-category/", formData);
+      const res = await PostDataMultipart("/products/", formData);
       return res.payload;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Something went wrong");
@@ -50,7 +50,7 @@ export const updateProduct = createAsyncThunk(
   "product/update",
   async ({ _id, data }, { rejectWithValue }) => {
     try {
-      const response = await PutDataMultipart(`/products-category/${_id}`, data);
+      const response = await PutDataMultipart(`/products/${_id}`, data);
       if (response.status === 200) {
         return response.payload;
       } else {
@@ -77,7 +77,7 @@ export const deleteProduct = createAsyncThunk(
   "product/delete",
   async (id, { rejectWithValue }) => {
     try {
-      const res = await DeleteData(true, `/products-category/${id}`);
+      const res = await DeleteData(true, `/products/${id}`);
       return res.payload;
     } catch (error) {
       return rejectWithValue(error?.response?.data || error.message);
@@ -105,14 +105,14 @@ const productSlice = createSlice({
   reducers: {
     setSearch(state, action) {
       state.search = action.payload;
-      state.page = 1; // reset page on search change
+      state.page = 1; 
     },
     setPage(state, action) {
       state.page = action.payload;
     },
     setPageSize(state, action) {
       state.pageSize = action.payload;
-      state.page = 1; // reset page on page size change
+      state.page = 1; 
     },
     clearState(state) {
       state.isError = false;

@@ -15,7 +15,7 @@ const Table = ({
   pageSize,
   pagination,
   handleDelete,
-  handleEdit
+  handleEdit,
 }) => {
   const { palette } = useTheme();
   const isDarkMode = palette.mode === "dark";
@@ -95,6 +95,8 @@ const Table = ({
                           className="cursor-pointer text-red-600 hover:text-red-800"
                           onClick={() => handleDelete(row)}
                         />
+                      ) : column.render ? (
+                        column.render(row)
                       ) : (
                         row[column.accessor] ?? "-"
                       )}
