@@ -23,8 +23,6 @@ const AddCategory = ({ handleCloseAddCategory }) => {
   const [formData, setFormData] = useState(initialFormData);
   const [imagePreview, setImagePreview] = useState(null);
 
-  console.log({imagePreview});
-
   const handleClose = useCallback(() => {
     handleCloseAddCategory();
     setFormData(initialFormData);
