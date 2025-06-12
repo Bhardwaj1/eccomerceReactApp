@@ -5,11 +5,6 @@ export const initialProductFormData = {
   category: null,
   brand: "Generic",
   stock: 0,
-  images: [
-    {
-      url: "",
-      alt: "",
-    },
-  ],
+  images: [],
   isFeatured: false,
 };

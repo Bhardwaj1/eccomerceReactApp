@@ -17,8 +17,8 @@ const ProductForm = ({
   formData,
   handleSubmit,
   setFormData,
-  imagePreview,
-  setImagePreview,
+  productImages,
+  setProductImages,
   actionType,
 }) => {
   const theme = useTheme();
@@ -54,17 +54,22 @@ const ProductForm = ({
       setFormData({ ...formData, [name]: checked });
     } else if (type === "file") {
       const fileList = Array.from(files);
-      const newImages = fileList.map((file) => ({
-        url: URL.createObjectURL(file),
-        alt: file.name || "",
-      }));
+      const newImages = fileList.map((file) => {
+        const url = URL.createObjectURL(file);
+        return {
+          file, // Keep file for backend upload
+          url,
+          alt: file.name || "",
+          isNew: true, // Helps later to distinguish between existing and new
+        };
+      });
 
       setFormData((prev) => ({
         ...prev,
         images: [...(prev.images || []), ...newImages],
       }));
 
-      setImagePreview((prev) => [
+      setProductImages((prev) => [
         ...(prev || []),
         ...newImages.map((img) => img.url),
       ]);
@@ -74,20 +79,25 @@ const ProductForm = ({
   };
 
   const handleImageDelete = (indexToDelete) => {
-    const updatedImages = formData.images.filter((_, i) => i !== indexToDelete);
-    const updatedPreviews = imagePreview.filter((_, i) => i !== indexToDelete);
+  const updatedImages = formData.images.filter((_, i) => i !== indexToDelete);
+  const deletedImage = formData.images[indexToDelete];
 
-    URL.revokeObjectURL(imagePreview[indexToDelete]);
+  if (deletedImage?.isNew && deletedImage?.url) {
+    URL.revokeObjectURL(deletedImage.url);
+  }
 
-    setFormData({ ...formData, images: updatedImages });
-    setImagePreview(updatedPreviews);
-  };
+  setFormData({ ...formData, images: updatedImages });
+
+  const updatedPreviews = productImages.filter((_, i) => i !== indexToDelete);
+  setProductImages(updatedPreviews);
+};
+
 
   useEffect(() => {
     return () => {
-      imagePreview?.forEach((url) => URL.revokeObjectURL(url));
+      productImages?.forEach((url) => URL.revokeObjectURL(url));
     };
-  }, [imagePreview]);
+  }, [productImages]);
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
@@ -138,14 +148,14 @@ const ProductForm = ({
         >
           Category
         </label>
-        <Dropdown options={formattedOptions} />
+        <Dropdown options={formattedOptions} onchange={handleChange} name={`category`}/>
       </div>
 
-      {imagePreview?.length > 0 && (
+      {productImages?.length > 0 && (
         <div className="mb-2">
           <p className="text-sm text-gray-500 mb-1">Image Previews:</p>
           <div className="flex gap-2 flex-wrap">
-            {imagePreview.map((url, index) => (
+            {productImages.map((url, index) => (
               <div
                 key={index}
                 className="relative w-32 h-32 border rounded overflow-hidden"

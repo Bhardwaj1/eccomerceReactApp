@@ -1,7 +1,7 @@
 import { useTheme } from "@mui/material/styles";
 import AsyncSelect from "react-select/async";
 
-const Dropdown = ({ options = [] }) => {
+const Dropdown = ({ options = [],onchange,name}) => {
   const theme = useTheme();
   const isDark = theme.palette.mode === "dark";
   const filterColors = (inputValue) => {
@@ -55,6 +55,14 @@ const Dropdown = ({ options = [] }) => {
       defaultOptions={options}
       placeholder="Select"
       styles={customStyles}
+      onChange={(selectedOption) =>
+        onchange({
+          target: {
+            name: name,
+            value: selectedOption?.value || null,
+          },
+        })
+      }
     />
   );
 };
