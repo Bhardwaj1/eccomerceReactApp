@@ -1,39 +1,39 @@
 import axios from "axios";
 import axiosIntercepter from "./axiosIntercepter";
 
-export function PostData(isAuthenticated, apiUrl, data) {
-  let axiosConfig;
-  if (isAuthenticated) {
-    const { token } = JSON.parse(sessionStorage.getItem("authentication"));
-    axiosConfig = {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    };
-  } else {
-    axiosConfig = {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
-  }
+// export function PostData(isAuthenticated, apiUrl, data) {
+//   let axiosConfig;
+//   if (isAuthenticated) {
+//     const { token } = JSON.parse(sessionStorage.getItem("authentication"));
+//     axiosConfig = {
+//       headers: {
+//         "Content-Type": "application/json",
+//         Authorization: `Bearer ${token}`,
+//       },
+//     };
+//   } else {
+//     axiosConfig = {
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//     };
+//   }
 
-  return new Promise(async (resolve, reject) => {
-    try {
-      let currentSchema = sessionStorage.getItem("currentSchema");
-      if (!currentSchema) {
-        return reject({ message: "Leagal Entity Not Found" });
-      }
-      let totalurl = `${process.env.REACT_APP_SERVER_PROTOCAL}${currentSchema}.${process.env.REACT_APP_SERVER_BASE_URL}${apiUrl}`;
+//   return new Promise(async (resolve, reject) => {
+//     try {
+//       let currentSchema = sessionStorage.getItem("currentSchema");
+//       if (!currentSchema) {
+//         return reject({ message: "Leagal Entity Not Found" });
+//       }
+//       let totalurl = `${process.env.REACT_APP_SERVER_PROTOCAL}${currentSchema}.${process.env.REACT_APP_SERVER_BASE_URL}${apiUrl}`;
 
-      const res = await axiosIntercepter.post(totalurl, data, axiosConfig);
-      resolve({ status: res.status, payload: res.data });
-    } catch (error) {
-      reject(error);
-    }
-  });
-}
+//       const res = await axiosIntercepter.post(totalurl, data, axiosConfig);
+//       resolve({ status: res.status, payload: res.data });
+//     } catch (error) {
+//       reject(error);
+//     }
+//   });
+// }
 
 // export function PutData(isAuthenticated, apiUrl, data) {
 //   let axiosConfig;
@@ -70,6 +70,28 @@ export function PostData(isAuthenticated, apiUrl, data) {
 //     }
 //   });
 // }
+
+
+export async function PostData(apiUrl, data, isAuthenticated = false) {
+  const headers = {
+    "Content-Type": "application/json",
+  };
+
+  if (isAuthenticated) {
+    const token = localStorage.getItem("token");
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+  }
+
+  try {
+    const res = await axios.post(`${process.env.REACT_APP_BASE_URL}${apiUrl}`, data, { headers });
+    return res.data;
+  } catch (err) {
+    throw err;
+  }
+}
+
 
 export function PutData(isAuthenticated, apiUrl, data) {
   let axiosConfig;

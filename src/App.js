@@ -1,4 +1,3 @@
-
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode } from "./theme/theme";
 import { useState } from "react";
@@ -12,6 +11,7 @@ import Dashboard from "./pages/Dashboard/Dashboard";
 import { Toaster } from "sonner";
 import Category from "./pages/ProductManagement/Categories/Category";
 import Product from "./pages/ProductManagement/Products/Product";
+import Register from "./pages/Register/Register";
 function App() {
   const [theme, colorMode] = useMode();
   const [isSidebar, setIsSidebar] = useState(true);
@@ -30,8 +30,9 @@ function App() {
               <Route path="/team" element={<Team />} />
               <Route path="/" element={<Dashboard />} />
               <Route path="/contacts" element={<Contacts />} />
-              <Route path='/products/productCategory'element={<Category/>}/>
-              <Route path="/products" element ={<Product/>}/>
+              <Route path="/products/productCategory" element={<Category />} />
+              <Route path="/products" element={<Product />} />
+              <Route path="/register" element={<Register />} />
             </Routes>
           </main>
         </div>
